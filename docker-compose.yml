@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: flask-api-postgres
+    environment:
+      POSTGRES_USER: flaskuser
+      POSTGRES_PASSWORD: flaskpass
+      POSTGRES_DB: flaskdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flaskuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - flask-network
+
+  # Flask API Application
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flask-api
+    environment:
+      FLASK_ENV: development
+      FLASK_DEBUG: "1"
+      DATABASE_URL: postgresql://flaskuser:flaskpass@postgres:5432/flaskdb
+      SECRET_KEY: dev-secret-key-change-in-production
+      LOG_LEVEL: INFO
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./app:/app/app
+      - ./scripts:/app/scripts
+    networks:
+      - flask-network
+    command: >
+      sh -c "python -m flask run --host=0.0.0.0 --port=5000"
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: flask-api-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - flask-network
+    profiles:
+      - tools
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  flask-network:
+    driver: bridge
+
+
+
