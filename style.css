@@ -419,6 +419,93 @@ input[type="range"] {
     border-color: #a89bc8;
     color: #5a5a6e;
 }
+.toggle-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+.toggle-btn {
+    background: #f9f7fd;
+    border: 1px solid #d4c5e2;
+    color: #5a5a6e;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s;
+}
+.toggle-btn.active {
+    background: rgba(177, 156, 217, 0.3);
+    border-color: #a89bc8;
+    color: #5a5a6e;
+}
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+}
+.btn {
+    background: linear-gradient(135deg, #8e7be3, #5e4bc7);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(94, 75, 199, 0.25);
+}
+.btn-secondary {
+    background: linear-gradient(135deg, #e0d8f2, #b896f7);
+    color: #5a5a6e;
+}
+.btn-secondary:hover {
+    box-shadow: 0 8px 20px rgba(168, 155, 200, 0.4);
+}
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+.stat-card {
+    background: #f9f7fd;
+    border: 1px solid #e0d5ed;
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+}
+.stat-card .label {
+    font-size: 0.8em;
+    color: #8b7a9e;
+    margin-bottom: 6px;
+}
+.stat-card .value {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #a89bc8;
+}
 @media (max-width: 600px) {
     .controls-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Cute decorations */
+        .kawaii-corner {
+            position: fixed;
+            font-size: 1.5em;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .kawaii-1 { top: 20px; left: 20px; animation: float 3s ease-in-out infinite; }
+        .kawaii-2 { bottom: 20px; right: 20px; animation: float 3.5s ease-in-out infinite reverse; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }

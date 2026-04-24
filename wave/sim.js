@@ -173,7 +173,7 @@
         noStroke();
         textSize(13);
         textAlign(CENTER, TOP);
-        text('Rapat (kompresi) ↔ Renggang (rarefaksi)', canvasW / 2, 20);
+        text('密な部分 (圧縮) ↔ 疎な部分 (希薄)', canvasW / 2, 20);
         fill(168, 155, 200);
         textSize(12);
         text('λ = ' + nf(lambda, 1, 0) + ' px', canvasW / 2, 42);
@@ -238,37 +238,31 @@
         endShape();
         noDash();
 
-        // Nodes (simpul)
+        // Nodes
         noStroke();
         for (let x = 0; x < canvasW; x += 2) {
-            if (abs(sin(k * x)) < 0.05) {
+            if (abs(sin(k * x)) < 0.03) {
                 fill(200, 150, 180);
                 ellipse(x, midY, 10, 10);
                 fill(210, 165, 195);
                 textSize(9);
                 textAlign(CENTER);
-                text('S', x, midY + 20);
+                text('節', x, midY + 20);
             }
         }
 
-        // Antinodes (perut)
+        // Antinodes
         for (let x = 0; x < canvasW; x += 2) {
-            if (abs(sin(k * x)) > 0.95) {
+            if (abs(sin(k * x)) > 0.995) {
                 fill(168, 155, 200);
                 ellipse(x, midY, 10, 10);
                 fill(185, 175, 215);
                 textSize(9);
                 textAlign(CENTER);
-                text('P', x, midY + 20);
+                text('腹', x, midY + 20);
             }
         }
 
-        // Labels
-        fill(177, 156, 217);
-        noStroke();
-        textSize(12);
-        textAlign(CENTER, TOP);
-        text('S = Simpul  |  P = Perut', canvasW / 2, 10);
     }
 
     function drawSuperposition() {
@@ -278,7 +272,7 @@
 
         // Wave 1 (rightward)
         noFill();
-        stroke(168, 155, 200, 200);
+        stroke(168, 161, 226, 200);
         strokeWeight(2);
         strokeDash(8);
         beginShape();
@@ -313,14 +307,14 @@
 
         // Legend
         noStroke();
-        fill(168, 155, 200);
+        fill(168, 161, 226);
         textSize(12);
         textAlign(LEFT, TOP);
-        text('━ y₁ (ke kanan)', 15, 15);
+        text('━ y₁ (右方向)', 15, 15);
         fill(245, 168, 212);
-        text('━ y₂ (ke kiri)', 15, 35);
+        text('━ y₂ (左方向)', 15, 35);
         fill(177, 156, 217);
-        text('━ y₁ + y₂ (resultan)', 15, 55);
+        text('━ y₁ + y₂ (合成波)', 15, 55);
     }
 
     function drawLabels() {

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 放物運動シミュレータ</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="kawaii-corner kawaii-1">🐱</div>
+    <div class="kawaii-corner kawaii-2">✨</div>
+    
+    <h1>🎯 放物運動シミュレータ</h1>
+    <p class="subtitle">放物運動のインタラクティブ学習 • ベクトル可視化 • 物理クイズ</p>
+    <nav class="navbar">
+        <a class="nav-brand" href="../index.html">
+            <img src="../images/logo.png" alt="Logo">
+            <span>Wave Physics</span>
+        </a>
+        <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="../toc.html">目次</a>
+            <a href="../wave/quiz.html">Quiz</a>
+            <a href="#about">About</a>
+        </div>
+    </nav>
+
+    <div id="canvas-container"></div>
+
+    <!-- シミュレーションパネル -->
+    <div class="panel">
+        <h2>⚙️ シミュレーション操作</h2>
+        <div class="toggle-group">
+            <button class="toggle-btn active" onclick="toggleMode('normal')">🎯 ノーマル</button>
+            <button class="toggle-btn" onclick="toggleMode('vectors')">📐 ベクトル</button>
+            <button class="toggle-btn" onclick="toggleMode('trace')">👣 軌跡</button>
+            <button class="toggle-btn" onclick="toggleMode('compare')">🔁 比較</button>
+        </div>
+        <div class="controls-grid">
+            <div class="control-item">
+                <label>初速度 (v₀): <span class="value" id="v0Val">20</span> m/s</label>
+                <input type="range" id="v0" min="5" max="50" value="20" oninput="updateParams()">
+            </div>
+            <div class="control-item">
+                <label>発射角度 (θ): <span class="value" id="angleVal">45</span>°</label>
+                <input type="range" id="angle" min="10" max="80" value="45" oninput="updateParams()">
+            </div>
+            <div class="control-item">
+                <label>重力加速度 (g): <span class="value" id="gVal">9.8</span> m/s²</label>
+                <input type="range" id="gravity" min="1" max="20" step="0.1" value="9.8" oninput="updateParams()">
+            </div>
+            <div class="control-item">
+                <label>初期高さ (h₀): <span class="value" id="h0Val">0</span> m</label>
+                <input type="range" id="height0" min="0" max="30" value="0" oninput="updateParams()">
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn" onclick="launchProjectile()">🚀 発射！</button>
+            <button class="btn btn-secondary" onclick="togglePause()">⏸️ 一時停止/再生</button>
+            <button class="btn btn-secondary" onclick="clearTrace()">🧹 軌跡を消去</button>
+            <button class="btn btn-reset" onclick="resetAll()">🔄 全てリセット</button>
+        </div>
+        <div class="formula-box">
+            <div class="formula">x = v₀·cosθ·t &nbsp;&nbsp;|&nbsp;&nbsp; y = h₀ + v₀·sinθ·t - ½gt²</div>
+            <div class="calc" id="calcDisplay">v₀ₓ = 14.14 m/s &nbsp;|&nbsp; v₀ᵧ = 14.14 m/s</div>
+        </div>
+    </div>
+
+    <!-- 統計パネル -->
+    <div class="panel">
+        <h2>📊 計算結果</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="label">飛行時間</div>
+                <div class="value" id="statTime">2.88 s</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">飛距離 (R)</div>
+                <div class="value" id="statRange">40.8 m</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">最高点 (H)</div>
+                <div class="value" id="statHeight">10.2 m</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">最終速度</div>
+                <div class="value" id="statVFinal">20.0 m/s</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 公式パネル -->
+    <div class="panel">
+        <h2>📐 放物運動の公式</h2>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('rumus')">基本公式</button>
+            <button class="tab-btn" onclick="switchTab('konsep')">重要概念</button>
+        </div>
+        <div class="tab-content active" id="tab-rumus">
+            <div class="formula-box">
+                <div class="formula">v₀ₓ = v₀·cosθ &nbsp;&nbsp;&nbsp; v₀ᵧ = v₀·sinθ</div>
+                <div class="calc">x軸とy軸の初速度成分</div>
+            </div>
+            <div class="formula-box">
+                <div class="formula">tₘₐₓ = v₀ᵧ / g &nbsp;&nbsp;&nbsp; H = h₀ + v₀ᵧ² / (2g)</div>
+                <div class="calc">最高点到達時間と最高点の高さ</div>
+            </div>
+            <div class="formula-box">
+                <div class="formula">tₜₒₜₐₗ = [v₀ᵧ + √(v₀ᵧ² + 2gh₀)] / g</div>
+                <div class="calc">地面に落下するまでの総時間 (h₀ ≠ 0)</div>
+            </div>
+            <div class="formula-box">
+                <div class="formula">R = v₀ₓ · tₜₒₜₐₗ</div>
+                <div class="calc">水平方向の最大飛距離 (レンジ)</div>
+            </div>
+            <div class="formula-box">
+                <div class="formula">θₒₚₜᵢₘₐₗ = 45° (h₀ = 0 の場合)</div>
+                <div class="calc">水平面での最大飛距離を与える角度</div>
+            </div>
+        </div>
+        <div class="tab-content" id="tab-konsep">
+            <div class="formula-box">
+                <div class="formula" style="color:#fcd34d;">🔹 独立した運動</div>
+                <div class="calc">x軸の運動 (等速直線運動) とy軸の運動 (等加速度直線運動) は独立している。時間が唯一のつながりである。</div>
+            </div>
+            <div class="formula-box">
+                <div class="formula" style="color:#fcd34d;">🔹 最高点での速度</div>
+                <div class="calc">最高点では vᵧ = 0 だが、vₓ は一定である。全体の速度最小値は v₀ₓ である。</div>
+            </div>
+            <div class="formula-box">
+                <div class="formula" style="color:#fcd34d;">🔹 軌跡の対称性</div>
+                <div class="calc">h₀ = 0 の場合: 上昇時間 = 下降時間、初速度と最終速度の大きさは等しい (向きは異なる)。</div>
+            </div>
+            <div class="formula-box">
+                <div class="formula" style="color:#fcd34d;">🔹 重力の影響</div>
+                <div class="calc">g は垂直成分のみに影響する。g が大きいほど、飛行時間と飛距離は短くなる。</div>
+            </div>
+        </div>
+    </div>
+
+
+<script src="sim.js"></script>
+<a href="quiz.html" class="btn-quiz">クイズへ</a>
+
+</body>
+</html>

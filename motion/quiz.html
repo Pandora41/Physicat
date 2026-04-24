@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>放物運動シミュレータ</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+</head>
+<body>
+
+<h1>🎯 放物運動シミュレータ</h1>
+    <p class="subtitle">放物運動のインタラクティブ学習 • ベクトル可視化 • 物理クイズ</p>
+    <nav class="navbar">
+        <a class="nav-brand" href="../index.html">
+            <img src="../images/logo.png" alt="Logo">
+            <span>Wave Physics</span>
+        </a>
+        <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="../toc.html">目次</a>
+            <a href="../wave/quiz.html">Quiz</a>
+            <a href="#about">About</a>
+        </div>
+    </nav>
+
+    <div id="canvas-container"></div>
+    <!-- クイズパネル -->
+    <div class="panel">
+        <h2>📝 放物運動クイズ</h2>
+        <div class="score-bar">
+            <span class="score-text">スコア:</span>
+            <span class="score-num"><span id="scoreNum">0</span>/<span id="totalQ">8</span></span>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width:0%"></div>
+            </div>
+            <button class="btn-reset" onclick="resetQuiz()">🔄 リセット</button>
+        </div>
+        <div class="quiz-container" id="quizContainer"></div>
+    </div>
+    <script src="quiz.js"> </script>
+</body>
+ 
