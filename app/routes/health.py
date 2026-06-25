@@ -4,8 +4,6 @@ from typing import Dict, Any
 import structlog
 from flask import Blueprint, jsonify
 
-from app import db
-
 logger = structlog.get_logger(__name__)
 
 bp = Blueprint("health", __name__)
@@ -22,6 +20,7 @@ def health_check() -> Dict[str, Any]:
 @bp.route("/ready", methods=["GET"])
 def readiness_check() -> Dict[str, Any]:
     try:
+        from app import db
         # Simple database connectivity check
         db.session.execute(db.text("SELECT 1"))
         db_status = "connected"

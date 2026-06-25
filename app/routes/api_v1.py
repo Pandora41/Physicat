@@ -2,7 +2,7 @@
 from typing import Dict, Any, List
 
 import structlog
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 from flasgger import swag_from
 
 logger = structlog.get_logger(__name__)
@@ -10,20 +10,6 @@ logger = structlog.get_logger(__name__)
 bp = Blueprint("api_v1", __name__)
 
 
-# API information endpoint - returns API version and available endpoints
-@bp.route("/", methods=["GET"])
-def api_info() -> Dict[str, Any]:
-    logger.info("API info requested")
-    return jsonify(
-        {
-            "version": "1.0.0",
-            "endpoints": [
-                "/api/v1/",
-                "/api/v1/items",
-                "/api/v1/items/<id>",
-            ],
-        }
-    )
 
 
 # Get all items - returns a list of all items in the system with pagination
@@ -73,3 +59,7 @@ def create_item() -> Dict[str, Any]:
         }
     ), 201
 
+@bp.route("/", methods=["GET"])
+def page() -> str:
+    logger.info("Page requested")
+    return render_template("index.html", message="Hello from Flask!")

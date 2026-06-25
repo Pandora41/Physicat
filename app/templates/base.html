@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Physicat{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Navbar ditulis SEKALI di sini -->
+  <nav class="navbar">
+    <a class="nav-brand" href="{{ url_for('pages.index') }}">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+      <span>Physicat</span>
+    </a>
+    <div class="nav-links">
+      <a href="{{ url_for('pages.index') }}">Home</a>
+      <a href="{{ url_for('pages.toc') }}">Table of Content</a>
+      <a href="#about">About</a>
+    </div>
+  </nav>
+
+  <!-- Konten tiap halaman masuk ke sini -->
+  <main class="home-main">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

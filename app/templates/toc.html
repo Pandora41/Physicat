@@ -1,0 +1,16 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Table of Content{% endblock %}
+
+{% block content %}
+  <section class="panel" id="about">
+    <h1>Table of Content</h1>
+    <p>ここは学習コンテンツの目次ページである。</p>
+    <ul class="toc-list">
+      <li><a href="{{ url_for('pages.wave_learn') }}">波のシミュレーション</a></li>
+      <li><a href="pages.quiz_wave">波のクイズ</a></li>
+      <li><a href="pages.motion_learn">放物運動</a></li>
+      <li><a href="pages.quiz_motion">放物運動クイズ</a></li>
+    </ul>
+  </section>
+{% endblock %}

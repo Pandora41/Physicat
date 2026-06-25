@@ -34,10 +34,11 @@ def create_app(config: Optional[Settings] = None) -> Flask:
     db.init_app(app)
 
     # Register blueprints
-    from app.routes import health, api_v1
+    from app.routes import health, api_v1, pages
 
     app.register_blueprint(health.bp)
     app.register_blueprint(api_v1.bp, url_prefix="/api/v1")
+    app.register_blueprint(pages.bp, url_prefix="/")
 
     # Setup OpenAPI documentation
     try:
