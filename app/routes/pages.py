@@ -38,3 +38,8 @@ def wave_learn() -> str:
 def quiz_wave() -> str:
     logger.info("Wave quiz page requested")
     return render_template("wave/quiz.html")
+
+@bp.route("/bb84", methods=["GET"])
+def bb84() -> str:
+    logger.info("BB84 dashboard requested")
+    return render_template("bb84.html")

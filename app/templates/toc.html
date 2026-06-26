@@ -8,9 +8,9 @@
     <p>ここは学習コンテンツの目次ページである。</p>
     <ul class="toc-list">
       <li><a href="{{ url_for('pages.wave_learn') }}">波のシミュレーション</a></li>
-      <li><a href="pages.quiz_wave">波のクイズ</a></li>
+      <li><a href="{{ url_for('pages.quiz_wave') }}">波のクイズ</a></li>
       <li><a href="pages.motion_learn">放物運動</a></li>
       <li><a href="pages.quiz_motion">放物運動クイズ</a></li>
-    </ul>
+      <li><a href="{{ url_for('pages.bb84') }}">BB84 量子鍵配送</a></li>
   </section>
 {% endblock %}
