@@ -4,11 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>インタラクティブ物理 - 波</title>
-    
-    <!-- ✅ CSS dari static -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    
-    <!-- ✅ p5.js dari CDN (tetap sama, gak perlu diubah) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 </head>
 <body>
@@ -16,7 +12,6 @@
     <p class="subtitle">探索、シミュレーション、理解度チェック！</p>
 
     <nav class="navbar">
-        <!-- ✅ Semua link & gambar pakai url_for -->
         <a class="nav-brand" href="{{ url_for('pages.index') }}">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
             <span>Wave Physics</span>
@@ -64,7 +59,6 @@
         </div>
     </div>
 
-    <!-- 公式 & 情報パネル (TETAP SAMA) -->
     <div class="panel" id="formula-info">
         <h2>📐 公式 & 情報</h2>
         <div class="tabs">
@@ -120,11 +114,7 @@
             </div>
         </div>
     </div>
-
-    <!-- ✅ sim.js dari static folder -->
     <script src="{{ url_for('static', filename='js/wave/sim.js') }}"></script>
-    
-    <!-- ✅ Link ke quiz pakai url_for -->
-    <a href="pages.quiz_wave" class="btn-quiz">クイズへ</a>
+    <a href="{{ url_for('pages.quiz_wave') }}" class="btn-quiz">クイズへ</a>
 </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>インタラクティブ物理 - 波</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 </head>
 <body>
@@ -12,15 +12,15 @@
     <p class="subtitle">探索、シミュレーション、理解度チェック！</p>
 
     <nav class="navbar">
-        <a class="nav-brand" href="../index.html">
-            <img src="../images/logo.png" alt="Logo">
+        <a class="nav-brand" href="{{ url_for('pages.index') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
             <span>Wave Physics</span>
         </a>
         <div class="nav-links">
-            <a href="../index.html">Home</a>
-            <a href="../toc.html">目次</a>
-            <a href="../quiz.html">Quiz</a>
-            <a href="../about.html">About</a>
+            <a href="{{ url_for('pages.index') }}">Home</a>
+            <a href="{{ url_for('pages.toc') }}">目次</a>
+            <a href="{{ url_for('pages.quiz_wave') }}">Quiz</a>
+            <a href="{{ url_for('pages.about') }}">About</a>
         </div>
     </nav>
 
@@ -38,6 +38,6 @@
         </div>
         <div class="quiz-container" id="quizContainer"></div>
     </div>
-    <script src="quiz.js"> </script>
+    <script src="{{ url_for('static', filename='js/wave/quiz.js') }}"></script>
 </body>
  
