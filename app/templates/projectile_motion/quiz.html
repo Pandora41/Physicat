@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>放物運動クイズ - Physicat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="nav-brand" href="{{ url_for('pages.index') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+            <span>Physicat</span>
+        </a>
+        <div class="nav-links">
+            <a href="{{ url_for('pages.index') }}">Home</a>
+            <a href="{{ url_for('pages.toc') }}">目次</a>
+            <a href="{{ url_for('pages.projectile_motion_learn') }}">シミュレーション</a>
+            <a href="{{ url_for('pages.about') }}">About</a>
+        </div>
+    </nav>
+
+    <main class="home-main">
+        <h1>🎯 放物運動クイズ</h1>
+        <p class="subtitle">放物運動のインタラクティブ学習 • ベクトル可視化 • 物理クイズ</p>
+
+        <div id="canvas-container"></div>
+
+        <!-- クイズパネル -->
+        <div class="panel">
+            <h2>📝 放物運動クイズ</h2>
+            <div class="score-bar">
+                <span class="score-text">スコア:</span>
+                <span class="score-num"><span id="scoreNum">0</span>/<span id="totalQ">8</span></span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                </div>
+                <button class="btn-reset" onclick="resetQuiz()">🔄 リセット</button>
+            </div>
+            <div class="quiz-container" id="quizContainer"></div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/projectile_motion/quiz.js') }}"></script>
+</body>
+</html>

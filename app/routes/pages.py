@@ -39,6 +39,17 @@ def quiz_wave() -> str:
     logger.info("Wave quiz page requested")
     return render_template("wave/quiz.html")
 
+# Projectile Motion Pages
+@bp.route("/projectile_motion/learn", methods=["GET"])
+def projectile_motion_learn() -> str:
+    logger.info("projectile_motion learn page requested")
+    return render_template("projectile_motion/learn.html")
+
+@bp.route("/projectile_motion/quiz", methods=["GET"])
+def quiz_projectile_motion() -> str:
+    logger.info("projectile_motion quiz page requested")
+    return render_template("projectile_motion/quiz.html")
+
 @bp.route("/bb84", methods=["GET"])
 def bb84() -> str:
     logger.info("BB84 dashboard requested")
