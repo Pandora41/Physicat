@@ -1,11 +1,10 @@
 # Flask Application Factory - creates Flask instances with proper configuration, blueprints, and extensions
 
 from typing import Optional
-from app import models
 
 import structlog
 from flask import Flask
-from app.extensions import db  # Import dari extensions
+from app.extensions import db
 
 from app.config import Settings, get_settings
 from app.utils.logging import configure_logging
@@ -14,11 +13,8 @@ from app.utils.logging import configure_logging
 logger = structlog.get_logger(__name__)
 
 
-# Create and configure Flask application instance with Pydantic settings, database, blueprints, OpenAPI docs, and structured logging
 def create_app(config: Optional[Settings] = None) -> Flask:
-    from app import models
     settings = config or get_settings()
-
 
     # Configure structured logging
     configure_logging(settings.log_level)
@@ -34,8 +30,13 @@ def create_app(config: Optional[Settings] = None) -> Flask:
     # Initialize extensions
     db.init_app(app)
 
-    # Admin dashboard integration requires a Flask-compatible admin package.
-    # SQLAdmin is ASGI-based and cannot mount directly onto Flask.
+    # ✅ Import models (biar SQLAlchemy tau)
+    from app import models
+
+    # ✅ Setup Admin Panel (Flask-Admin)
+    from app.admin import setup_admin
+    if setup_admin(app) is None:
+        logger.warning("Admin panel disabled: Flask-Admin is not installed.")
 
     # Register blueprints
     from app.routes import health, api_v1, pages, lessons
@@ -43,7 +44,7 @@ def create_app(config: Optional[Settings] = None) -> Flask:
     app.register_blueprint(health.bp)
     app.register_blueprint(api_v1.bp, url_prefix="/api/v1")
     app.register_blueprint(pages.bp, url_prefix="/")
-    app.register_blueprint(lessons.bp, url_prefix="/") 
+    app.register_blueprint(lessons.bp, url_prefix="/")
     
     # Setup OpenAPI documentation
     try:
@@ -83,10 +84,8 @@ def create_app(config: Optional[Settings] = None) -> Flask:
     # Health check endpoint
     @app.route("/")
     def root() -> dict[str, str]:
-        # Root endpoint
         return {"status": "ok", "message": "Flask API is running"}
 
     logger.info("Flask application created", env=settings.flask_env)
 
     return app
-

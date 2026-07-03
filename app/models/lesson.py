@@ -21,10 +21,24 @@ class Lesson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     slug = db.Column(db.String(100), unique=True, nullable=False, index=True)
-    category = db.Column(db.Enum(CategoryEnum), default=CategoryEnum.MEKANIKA)
+    category = db.Column(
+        db.Enum(
+            CategoryEnum,
+            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+            native_enum=False,
+        ),
+        default=CategoryEnum.MEKANIKA,
+    )
     description = db.Column(db.Text, nullable=True)
     content_html = db.Column(db.Text, nullable=True)
-    simulation_type = db.Column(db.Enum(SimulationTypeEnum), nullable=True)
+    simulation_type = db.Column(
+        db.Enum(
+            SimulationTypeEnum,
+            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+            native_enum=False,
+        ),
+        nullable=True,
+    )
     order_index = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
