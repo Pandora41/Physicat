@@ -130,6 +130,75 @@ h1 {
     transform: translateY(-2px);
     box-shadow: 0 16px 28px rgba(94, 75, 199, 0.24);
 }
+.home-action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.btn-secondary {
+    background: linear-gradient(135deg, #e0d8f2, #b896f7);
+    color: #5a5a6e;
+}
+.auth-panel {
+    background: #ffffff;
+    border: 1px solid #e0d5ed;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.auth-form label {
+    font-weight: 700;
+    color: #5a5a6e;
+}
+.auth-form input {
+    border: 1px solid #d4c5e2;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.95em;
+    background: #f9f7fd;
+}
+.auth-footnote {
+    color: #8b7a9e;
+}
+.auth-footnote a {
+    color: #6b5cc0;
+    text-decoration: none;
+}
+.auth-footnote a:hover {
+    text-decoration: underline;
+}
+.flash-container {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.flash {
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-weight: 700;
+}
+.flash-success {
+    background: #ebf8f3;
+    color: #2f7c56;
+    border: 1px solid #99d6b0;
+}
+.flash-danger {
+    background: #fff1f3;
+    color: #b3344c;
+    border: 1px solid #f3b3c0;
+}
 .hero-image {
     display: flex;
     align-items: center;

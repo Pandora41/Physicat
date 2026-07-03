@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}登録 - Physicat{% endblock %}
+
+{% block content %}
+  <section class="auth-panel">
+    <h1>新規登録</h1>
+    <form method="POST" class="auth-form">
+      <label for="username">ユーザー名</label>
+      <input type="text" id="username" name="username" required>
+
+      <label for="email">メールアドレス</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="password">パスワード</label>
+      <input type="password" id="password" name="password" required>
+
+      <label for="confirm_password">パスワード確認</label>
+      <input type="password" id="confirm_password" name="confirm_password" required>
+
+      <button type="submit" class="home-button">登録</button>
+    </form>
+    <p class="auth-footnote">すでにアカウントをお持ちですか？ <a href="{{ url_for('pages.login') }}">ログイン</a></p>
+  </section>
+{% endblock %}
