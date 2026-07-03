@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lesson.title }} - Physicat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% if lesson.simulation_type and lesson.simulation_type.value == 'wave' %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    {% endif %}
+</head>
+<body>
+    <nav class="navbar">
+        <a class="nav-brand" href="{{ url_for('pages.index') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+            <span>Physicat</span>
+        </a>
+        <div class="nav-links">
+            <a href="{{ url_for('pages.index') }}">Home</a>
+            <a href="{{ url_for('lessons.lesson_list') }}">Pelajaran</a>
+            <a href="{{ url_for('pages.about') }}">About</a>
+        </div>
+    </nav>
+
+    <main class="home-main">
+        <h1>{{ lesson.title }}</h1>
+        <p class="subtitle">{{ lesson.description or 'Materi pembelajaran' }}</p>
+
+        <!-- Content HTML dari database -->
+        <div class="panel">
+            {{ lesson.content_html | safe }}
+        </div>
+
+        <!-- Simulation (jika ada) -->
+        {% if lesson.simulation_type %}
+            {% if lesson.simulation_type.value == 'wave' %}
+                <div class="panel">
+                    <h2>🌊 Simulasi Gelombang</h2>
+                    <div id="canvas-container"></div>
+                    <script src="{{ url_for('static', filename='js/sim.js') }}"></script>
+                </div>
+            {% elif lesson.simulation_type.value == 'projectile' %}
+                <div class="panel">
+                    <h2>🎯 Simulasi Gerak Proyektil</h2>
+                    <div id="canvas-container"></div>
+                    <script src="{{ url_for('static', filename='js/projectile_motion/quiz.js') }}"></script>
+                </div>
+            {% elif lesson.simulation_type.value == 'bb84' %}
+                <div class="panel">
+                    <h2>🔐 Simulasi BB84 QKD</h2>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <div id="bb84-container"></div>
+                    <script src="{{ url_for('static', filename='js/bb84_dashboard.js') }}"></script>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Quiz Section -->
+        {% if lesson.quizzes %}
+            <div class="panel">
+                <h2>📝 Quiz</h2>
+                {% for quiz in lesson.quizzes %}
+                    <div style="margin-bottom: 15px;">
+                        <h3>{{ quiz.title }}</h3>
+                        {% if quiz.description %}
+                            <p>{{ quiz.description }}</p>
+                        {% endif %}
+                        <a href="{{ url_for('lessons.quiz_detail', quiz_id=quiz.id) }}" class="btn-quiz">Mulai Quiz</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('lessons.lesson_list') }}" class="btn-back">← Kembali ke Daftar Pelajaran</a>
+        </div>
+    </main>
+</body>
+</html>

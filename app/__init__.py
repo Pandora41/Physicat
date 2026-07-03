@@ -1,23 +1,24 @@
 # Flask Application Factory - creates Flask instances with proper configuration, blueprints, and extensions
 
 from typing import Optional
+from app import models
 
 import structlog
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from app.extensions import db  # Import dari extensions
 
 from app.config import Settings, get_settings
 from app.utils.logging import configure_logging
 
-# Initialize extensions
-db: SQLAlchemy = SQLAlchemy()
 
 logger = structlog.get_logger(__name__)
 
 
 # Create and configure Flask application instance with Pydantic settings, database, blueprints, OpenAPI docs, and structured logging
 def create_app(config: Optional[Settings] = None) -> Flask:
+    from app import models
     settings = config or get_settings()
+
 
     # Configure structured logging
     configure_logging(settings.log_level)
@@ -33,12 +34,16 @@ def create_app(config: Optional[Settings] = None) -> Flask:
     # Initialize extensions
     db.init_app(app)
 
+    # Admin dashboard integration requires a Flask-compatible admin package.
+    # SQLAdmin is ASGI-based and cannot mount directly onto Flask.
+
     # Register blueprints
-    from app.routes import health, api_v1, pages
+    from app.routes import health, api_v1, pages, lessons
 
     app.register_blueprint(health.bp)
     app.register_blueprint(api_v1.bp, url_prefix="/api/v1")
     app.register_blueprint(pages.bp, url_prefix="/")
+    app.register_blueprint(lessons.bp, url_prefix="/") 
     
     # Setup OpenAPI documentation
     try:

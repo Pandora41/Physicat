@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ quiz.title }} - Physicat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a class="nav-brand" href="{{ url_for('pages.index') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+            <span>Physicat</span>
+        </a>
+        <div class="nav-links">
+            <a href="{{ url_for('pages.index') }}">Home</a>
+            <a href="{{ url_for('lessons.lesson_list') }}">Pelajaran</a>
+            <a href="{{ url_for('pages.about') }}">About</a>
+        </div>
+    </nav>
+
+    <main class="home-main">
+        <h1>{{ quiz.title }}</h1>
+        {% if quiz.description %}
+            <p class="subtitle">{{ quiz.description }}</p>
+        {% endif %}
+
+        <div class="panel">
+            <div class="score-bar">
+                <span class="score-text">Skor:</span>
+                <span class="score-num"><span id="scoreNum">0</span>/<span id="totalQ">{{ questions|length }}</span></span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                </div>
+                <button class="btn-reset" onclick="resetQuiz()">🔄 Reset</button>
+            </div>
+
+            <div class="quiz-container" id="quizContainer">
+                {% for question in questions %}
+                <div class="question-card" data-correct="{{ question.correct_answer }}">
+                    <div class="question-text">
+                        <span class="q-num">{{ loop.index }}</span>
+                        {{ question.question_text }}
+                    </div>
+                    <div class="options">
+                        {% for option in question.options %}
+                        <button class="option-btn" onclick="checkAnswer(this, {{ loop.index0 }})">
+                            {{ option }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                    {% if question.explanation %}
+                    <div class="explanation">
+                        💡 {{ question.explanation }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('lessons.lesson_detail', slug=quiz.lesson.slug) }}" class="btn-back">← Kembali ke Materi</a>
+        </div>
+    </main>
+
+    <script>
+        let score = 0;
+        let answered = 0;
+        const totalQuestions = {{ questions|length }};
+
+        function checkAnswer(button, selectedIndex) {
+            const card = button.closest('.question-card');
+            if (card.classList.contains('answered')) return;
+            
+            card.classList.add('answered');
+            const correctIndex = parseInt(card.dataset.correct);
+            const options = card.querySelectorAll('.option-btn');
+            
+            options.forEach((opt, idx) => {
+                opt.disabled = true;
+                if (idx === correctIndex) {
+                    opt.classList.add('show-correct');
+                }
+            });
+            
+            if (selectedIndex === correctIndex) {
+                button.classList.add('selected-correct');
+                score++;
+            } else {
+                button.classList.add('selected-wrong');
+            }
+            
+            answered++;
+            document.getElementById('scoreNum').textContent = score;
+            document.getElementById('progressFill').style.width = (answered / totalQuestions * 100) + '%';
+            
+            const explanation = card.querySelector('.explanation');
+            if (explanation) {
+                explanation.classList.add('show');
+            }
+        }
+
+        function resetQuiz() {
+            score = 0;
+            answered = 0;
+            document.getElementById('scoreNum').textContent = '0';
+            document.getElementById('progressFill').style.width = '0%';
+            
+            document.querySelectorAll('.question-card').forEach(card => {
+                card.classList.remove('answered');
+                card.querySelectorAll('.option-btn').forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('selected-correct', 'selected-wrong', 'show-correct');
+                });
+                const explanation = card.querySelector('.explanation');
+                if (explanation) explanation.classList.remove('show');
+            });
+        }
+    </script>
+</body>
+</html>

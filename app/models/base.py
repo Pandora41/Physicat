@@ -4,7 +4,7 @@ from typing import Any
 
 from sqlalchemy import Column, Integer, DateTime
 
-from app import db
+from app.extensions import db
 
 
 # Base model class with common fields - all models should inherit from this to get id, timestamps, and utility methods
