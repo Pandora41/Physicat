@@ -44,3 +44,12 @@ def test_sqlalchemy_config() -> None:
     assert "SQLALCHEMY_ECHO" in config
     assert config["SQLALCHEMY_TRACK_MODIFICATIONS"] is False
 
+
+# Test relative SQLite paths resolve against the project root to avoid cwd-dependent DB selection
+@pytest.mark.unit
+def test_sqlite_relative_path_resolves_to_project_root() -> None:
+    settings = Settings(database_url="sqlite:///instance/app.db")
+    config = settings.get_sqlalchemy_config()
+    assert config["SQLALCHEMY_DATABASE_URI"].endswith("/instance/app.db")
+    assert "sqlite:///" in config["SQLALCHEMY_DATABASE_URI"]
+

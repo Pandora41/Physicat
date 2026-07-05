@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}メール確認 - Physicat{% endblock %}
+
+{% block content %}
+  <section class="auth-panel">
+    {% if verified %}
+      <h1>メール確認完了</h1>
+      <p>メールアドレスが正常に確認されました。ログインできます。</p>
+      <a class="home-button" href="{{ url_for('pages.login') }}">ログイン</a>
+    {% else %}
+      <h1>確認に失敗しました</h1>
+      <p>確認リンクが無効か期限切れです。もう一度登録してください。</p>
+      <a class="home-button btn-secondary" href="{{ url_for('pages.register') }}">再登録</a>
+    {% endif %}
+  </section>
+{% endblock %}

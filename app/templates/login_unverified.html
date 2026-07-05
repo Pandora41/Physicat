@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}メールアドレス確認 - Physicat{% endblock %}
+
+{% block content %}
+  <section class="auth-panel">
+    <h1>メールアドレス未確認</h1>
+    
+    <p style="text-align: center; margin-bottom: 20px;">
+      確認メールを送信しました。メールを確認してアカウントを有効化してください。
+    </p>
+    <p style="text-align: center; margin-bottom: 20px; color: #666; font-size: 0.9em;">
+      メールが届かない場合は、下のボタンから再送信できます。
+    </p>
+
+    <form action="{{ url_for('pages.resend_verification') }}" method="POST" class="auth-form" style="margin-top: 0;">
+      <input type="hidden" name="email" value="{{ email }}">
+      <button type="submit" class="home-button">確認メールを再送信する</button>
+    </form>
+
+    <p class="auth-footnote"><a href="{{ url_for('pages.login') }}">← ログインページに戻る</a></p>
+  </section>
+{% endblock %}

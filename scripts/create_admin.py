@@ -23,7 +23,8 @@ with app.app_context():
         admin = User(
             username="admin",
             email="admin@physicat.com",
-            is_admin=True
+            is_admin=True,
+            is_verified=True
         )
         admin.set_password("admin123")  # GANTI PASSWORD INI!
         

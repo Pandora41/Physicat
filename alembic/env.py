@@ -14,7 +14,9 @@ config = context.config
 
 # ✅ Ambil database_url dari Pydantic settings
 settings = get_settings()
-config.set_main_option("sqlalchemy.url", settings.database_url)
+config.set_main_option(
+    "sqlalchemy.url", settings.get_sqlalchemy_config()["SQLALCHEMY_DATABASE_URI"]
+)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

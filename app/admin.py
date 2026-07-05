@@ -75,7 +75,7 @@ class UserProgressAdmin(SecureModelView):
 
 
 class UserAdmin(ModelView):
-    column_list = ["id", "username", "email", "is_admin", "created_at"]
+    column_list = ["id", "username", "email", "is_admin", "is_verified", "created_at"]
     column_searchable_list = ["username", "email"]
     column_sortable_list = ["id", "username", "created_at"]
     column_default_sort = ("created_at", True)
