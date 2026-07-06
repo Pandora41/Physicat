@@ -21,11 +21,10 @@ __pycache__/
 .env
 .env.local
 .env.production
-*.db
-*.sqlite
-*.sqlite3
-app.db
-physicat.db
+# *.db
+# app.db
+# *.sqlite
+#physicat.db
 
 # ==========================================
 # IDE & EDITOR
