@@ -17,12 +17,13 @@
     </a>
     <div class="nav-links">
       <a href="{{ url_for('pages.index') }}">ホーム</a>
-      <a href="{{ url_for('pages.toc') }}">目次</a>
-      <a href="#about">About</a>
+      <a href="{{ url_for('lessons.lesson_list') }}">目次</a>
+      <a href="{{ url_for('pages.about') }}">開発者</a>
       {% if session.username %}
         {% if session.is_admin %}
           <a href="{{ url_for('admin.index') }}">管理パネル</a>
         {% endif %}
+        <a href="{{ url_for('pages.edit_profile') }}">プロフィール</a>
         <a href="{{ url_for('pages.logout') }}">ログアウト</a>
       {% else %}
         <a href="{{ url_for('pages.login') }}">ログイン</a>

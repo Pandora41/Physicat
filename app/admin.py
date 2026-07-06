@@ -40,7 +40,7 @@ class UserAdmin(SecureModelView):
 
 
 class LessonAdmin(SecureModelView):
-    column_list = ["id", "title", "slug", "category", "simulation_type", "order_index"]
+    column_list = ["id", "title", "slug", "category", "order_index"]
     column_searchable_list = ["title", "slug"]
     column_sortable_list = ["id", "title", "order_index"]
     column_default_sort = ("order_index", False)
@@ -83,7 +83,7 @@ class UserAdmin(ModelView):
 
 
 class LessonAdmin(ModelView):
-    column_list = ["id", "title", "slug", "category", "simulation_type", "order_index"]
+    column_list = ["id", "title", "slug", "category", "order_index"]
     column_searchable_list = ["title", "slug"]
     column_sortable_list = ["id", "title", "order_index"]
     column_default_sort = ("order_index", False)

@@ -1,27 +1,10 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semua Pelajaran - Physicat</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <nav class="navbar">
-        <a class="nav-brand" href="{{ url_for('pages.index') }}">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
-            <span>Physicat</span>
-        </a>
-        <div class="nav-links">
-            <a href="{{ url_for('pages.index') }}">Home</a>
-            <a href="{{ url_for('lessons.lesson_list') }}" class="active">Pelajaran</a>
-            <a href="{{ url_for('pages.about') }}">About</a>
-        </div>
-    </nav>
+{% extends "base.html" %}
 
-    <main class="home-main">
-        <h1>📚 Semua Pelajaran</h1>
-        <p class="subtitle">Pilih materi yang ingin kamu pelajari</p>
+{% block title %}レッスン一覧 - Physicat{% endblock %}
+
+{% block content %}
+    <h1>📚 レッスン一覧</h1>
+    <p class="subtitle">学習したい内容を選んでください。</p>
 
         {% if lessons %}
             <div class="toc-list">
@@ -36,10 +19,7 @@
                         <p style="color: #8b7a9e; margin: 10px 0;">{{ lesson.description }}</p>
                     {% endif %}
                     <div style="display: flex; gap: 10px; margin-top: 15px;">
-                        <span class="tag">{{ lesson.category.value if lesson.category else 'Umum' }}</span>
-                        {% if lesson.simulation_type %}
-                            <span class="tag">🎮 Simulasi: {{ lesson.simulation_type.value }}</span>
-                        {% endif %}
+                        <span class="tag">{{ lesson.get_category_label() }}</span>
                     </div>
                     {% if lesson.quizzes %}
                         <div style="margin-top: 15px;">
@@ -54,9 +34,7 @@
             </div>
         {% else %}
             <div class="panel">
-                <p style="text-align: center; color: #8b7a9e;">Belum ada pelajaran. Tambahkan via admin panel!</p>
+                <p style="text-align: center; color: #8b7a9e;">まだレッスンがありません。管理パネルから追加してください。</p>
             </div>
         {% endif %}
-    </main>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}プロフィール編集 - Physicat{% endblock %}
+
+{% block content %}
+  <section class="auth-panel">
+    <h1>プロフィール編集</h1>
+    <form method="POST" class="auth-form">
+      <label for="username">ユーザー名</label>
+      <input type="text" id="username" name="username" value="{{ user.username }}" required>
+
+      <label for="email">メールアドレス</label>
+      <input type="email" id="email" name="email" value="{{ user.email }}" required>
+
+      <label for="current_password">現在のパスワード（変更する場合）</label>
+      <input type="password" id="current_password" name="current_password">
+
+      <label for="new_password">新しいパスワード</label>
+      <input type="password" id="new_password" name="new_password">
+
+      <label for="confirm_password">新しいパスワード確認</label>
+      <input type="password" id="confirm_password" name="confirm_password">
+
+      <button type="submit" class="home-button">更新</button>
+    </form>
+  </section>
+{% endblock %}

@@ -6,7 +6,14 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 
 from app.extensions import db
 from app.models import User
-from app.utils.email import generate_verification_token, send_verification_email, confirm_verification_token
+from app.utils.email import (
+    generate_verification_token,
+    send_verification_email,
+    confirm_verification_token,
+    generate_password_reset_token,
+    confirm_password_reset_token,
+    send_password_reset_email,
+)
 
 logger = structlog.get_logger(__name__)
 
@@ -158,7 +165,6 @@ def resend_verification() -> str:
             flash("このメールアドレスは既に確認済みです。ログインしてください。", "info")
             return redirect(url_for("pages.login"))
         
-        # Generate token baru dan kirim email
         try:
             token = generate_verification_token(user.email)
             send_verification_email(user.email, token)
@@ -170,6 +176,130 @@ def resend_verification() -> str:
             return render_template("resend_verification.html")
     
     return render_template("resend_verification.html")
+
+
+@bp.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password() -> str:
+    if request.method == "POST":
+        email = request.form.get("email", "").strip().lower()
+
+        if not email:
+            flash("メールアドレスを入力してください。", "danger")
+            return render_template("forgot_password.html")
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            try:
+                token = generate_password_reset_token(user.email)
+                send_password_reset_email(user.email, token)
+            except Exception as exc:
+                logger.exception("Password reset email failed", error=str(exc), email=email)
+
+        flash("パスワード再設定用のメールを送信しました。メールボックスを確認してください。", "info")
+        return redirect(url_for("pages.login"))
+
+    return render_template("forgot_password.html")
+
+
+@bp.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token: str) -> str:
+    try:
+        email = confirm_password_reset_token(token)
+    except Exception:
+        flash("このリンクは無効か期限切れです。", "danger")
+        return redirect(url_for("pages.forgot_password"))
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        flash("ユーザーが見つかりませんでした。", "danger")
+        return redirect(url_for("pages.forgot_password"))
+
+    if request.method == "POST":
+        password = request.form.get("password", "")
+        confirm_password = request.form.get("confirm_password", "")
+
+        if not password or not confirm_password:
+            flash("新しいパスワードを入力してください。", "danger")
+        elif len(password) < 8:
+            flash("パスワードは8文字以上である必要があります。", "danger")
+        elif password != confirm_password:
+            flash("パスワードが一致しません。", "danger")
+        else:
+            user.set_password(password)
+            db.session.commit()
+            flash("パスワードを変更しました。ログインしてください。", "success")
+            return redirect(url_for("pages.login"))
+
+    return render_template("reset_password.html", token=token)
+
+
+@bp.route("/profile/edit", methods=["GET", "POST"])
+def edit_profile() -> str:
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("ログインしてください。", "warning")
+        return redirect(url_for("pages.login"))
+
+    user = User.query.get(user_id)
+    if not user:
+        flash("ユーザー情報が見つかりません。", "danger")
+        return redirect(url_for("pages.login"))
+
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        current_password = request.form.get("current_password", "")
+        new_password = request.form.get("new_password", "")
+        confirm_password = request.form.get("confirm_password", "")
+
+        if not username or not email:
+            flash("ユーザー名とメールアドレスを入力してください。", "danger")
+        else:
+            existing_username = User.query.filter(User.id != user.id, User.username == username).first()
+            existing_email = User.query.filter(User.id != user.id, User.email == email).first()
+
+            if existing_username:
+                flash("このユーザー名は既に使われています。", "danger")
+            elif existing_email:
+                flash("このメールアドレスは既に使われています。", "danger")
+            else:
+                changed_email = user.email != email
+                user.username = username
+
+                if changed_email:
+                    user.email = email
+                    user.is_verified = False
+                    try:
+                        token = generate_verification_token(user.email)
+                        send_verification_email(user.email, token)
+                        flash("メールアドレスを変更しました。新しいメールに確認リンクを送信しました。", "success")
+                    except Exception as exc:
+                        logger.exception("Verification email resend failed", error=str(exc), email=email)
+                        flash("確認メールの送信に失敗しました。", "warning")
+                else:
+                    flash("プロフィールを更新しました。", "success")
+
+                if new_password:
+                    if not current_password:
+                        flash("現在のパスワードを入力してください。", "danger")
+                        return render_template("edit_profile.html", user=user)
+                    if not user.check_password(current_password):
+                        flash("現在のパスワードが正しくありません。", "danger")
+                        return render_template("edit_profile.html", user=user)
+                    if len(new_password) < 8:
+                        flash("新しいパスワードは8文字以上である必要があります。", "danger")
+                        return render_template("edit_profile.html", user=user)
+                    if new_password != confirm_password:
+                        flash("新しいパスワードが一致しません。", "danger")
+                        return render_template("edit_profile.html", user=user)
+                    user.set_password(new_password)
+
+                db.session.commit()
+                session["username"] = user.username
+                session["is_verified"] = bool(user.is_verified)
+                return redirect(url_for("pages.edit_profile"))
+
+    return render_template("edit_profile.html", user=user)
 
 
 @bp.route("/logout")

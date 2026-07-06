@@ -1,26 +1,9 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ quiz.title }} - Physicat</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <nav class="navbar">
-        <a class="nav-brand" href="{{ url_for('pages.index') }}">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
-            <span>Physicat</span>
-        </a>
-        <div class="nav-links">
-            <a href="{{ url_for('pages.index') }}">Home</a>
-            <a href="{{ url_for('lessons.lesson_list') }}">Pelajaran</a>
-            <a href="{{ url_for('pages.about') }}">About</a>
-        </div>
-    </nav>
+{% extends "base.html" %}
 
-    <main class="home-main">
-        <h1>{{ quiz.title }}</h1>
+{% block title %}{{ quiz.title }} - Physicat{% endblock %}
+
+{% block content %}
+    <h1>{{ quiz.title }}</h1>
         {% if quiz.description %}
             <p class="subtitle">{{ quiz.description }}</p>
         {% endif %}
@@ -60,9 +43,8 @@
         </div>
 
         <div style="margin-top: 20px;">
-            <a href="{{ url_for('lessons.lesson_detail', slug=quiz.lesson.slug) }}" class="btn-back">← Kembali ke Materi</a>
+            <a href="{{ url_for('lessons.lesson_detail', slug=quiz.lesson.slug) }}" class="btn-back">← 学習内容へ戻る</a>
         </div>
-    </main>
 
     <script>
         let score = 0;
@@ -118,5 +100,4 @@
             });
         }
     </script>
-</body>
-</html>
+{% endblock %}
