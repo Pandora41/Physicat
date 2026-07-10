@@ -42,7 +42,7 @@ def send_verification_email(recipient: str, token: str) -> None:
         print(f"[email] verification token for {recipient}: {token}")
         return
 
-    verify_url = f"http://localhost:5000/verify/{token}"
+    verify_url = f"http://physicat.org/verify/{token}"
     message = EmailMessage()
     message["Subject"] = "Physicatメール確認"
     message["From"] = settings.mail_default_sender
@@ -69,7 +69,7 @@ def send_password_reset_email(recipient: str, token: str) -> None:
         print(f"[email] password reset token for {recipient}: {token}")
         return
 
-    reset_url = f"http://localhost:5000/reset-password/{token}"
+    reset_url = f"http://physicat.org/reset-password/{token}"
     message = EmailMessage()
     message["Subject"] = "Physicatパスワード再設定"
     message["From"] = settings.mail_default_sender
