@@ -1,6 +1,8 @@
 # Pages Routes - serves HTML pages
 from typing import Dict, Any
 
+from flask import current_app, request, flash, redirect, url_for
+
 import structlog
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 
@@ -74,6 +76,30 @@ def register() -> str:
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
         confirm_password = request.form.get("confirm_password", "")
+        turnstile_token = request.form.get('cf-turnstile-response')
+
+        if not turnstile_token:
+            flash('Cloudflareの確認に失敗しました。', 'error')
+            return redirect(url_for('auth.register'))
+        
+        # Verifikasi ke Cloudflare
+        verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+        payload = {
+            'secret': current_app.config.get('TURNSTILE_SECRET_KEY'),
+            'response': turnstile_token,
+            'remoteip': request.remote_addr
+        }
+        
+        try:
+            response = requests.post(verify_url, data=payload, timeout=5)
+            result = response.json()
+            
+            if not result.get('success'):
+                flash('Cloudflareの確認に失敗しました。', 'error')
+                return redirect(url_for('auth.register'))
+        except Exception as e:
+            flash('Cloudflareの確認に失敗しました。', 'error')
+            return redirect(url_for('auth.register'))
 
         spam_domains = ['immenseignite.info', 'tempmail.com', 'guerrillamail.com']
         if any(email.endswith(f'@{domain}') for domain in spam_domains):

@@ -18,6 +18,7 @@
       <label for="confirm_password">パスワード確認</label>
       <input type="password" id="confirm_password" name="confirm_password" required>
 
+      <div class="cf-turnstile" data-sitekey="{{ config.TURNSTILE_SITE_KEY }}"></div>
       <button type="submit" class="home-button">登録</button>
     </form>
     <p class="auth-footnote">すでにアカウントをお持ちですか？ <a href="{{ url_for('pages.login') }}">ログイン</a></p>
