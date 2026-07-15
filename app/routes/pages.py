@@ -1,12 +1,9 @@
 # Pages Routes - serves HTML pages
 from typing import Dict, Any
+import requests 
 import os
-from flask import render_template, request, flash, redirect, url_for, current_app
-from flask import current_app, request, flash, redirect, url_for
-
 import structlog
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app
 from app.extensions import db
 from app.models import User
 from app.utils.email import (
@@ -74,6 +71,10 @@ def bb84() -> str:
 
 @bp.route("/register", methods=["GET", "POST"])
 def register() -> str:
+    # 1. AMBIL KEY LANGSUNG DARI OS.ENVIRON (BIAR GAK NONE LAGI)
+    site_key = os.environ.get('TURNSTILE_SITE_KEY', '')
+    secret_key = os.environ.get('TURNSTILE_SECRET_KEY', '')
+
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         email = request.form.get("email", "").strip().lower()
@@ -82,13 +83,12 @@ def register() -> str:
         turnstile_token = request.form.get('cf-turnstile-response')
 
         if not turnstile_token:
-            flash('Cloudflareの確認に失敗しました。', 'error')
+            flash('Cloudflareの確認に失敗しました (Token kosong).', 'error')
             return redirect(url_for('pages.register'))
         
-        # Verifikasi ke Cloudflare
         verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
         payload = {
-            'secret': current_app.config.get('TURNSTILE_SECRET_KEY'),
+            'secret': secret_key, # Pake variabel secret_key di atas
             'response': turnstile_token,
             'remoteip': request.remote_addr
         }
@@ -98,10 +98,15 @@ def register() -> str:
             result = response.json()
             
             if not result.get('success'):
-                flash('Cloudflareの確認に失敗しました。', 'error')
+                print("❌ CLOUDFLARE API RESPONSE:", result) # DEBUG
+                error_codes = result.get("error-codes", ["Unknown error"])
+                flash(f'Cloudflareの確認に失敗しました: {error_codes}', 'error')
                 return redirect(url_for('pages.register'))
+                
         except Exception as e:
-            flash('Cloudflareの確認に失敗しました。', 'error')
+            # 2. INI BAKAL BILANG KENAPA ERROR "b" MUNCUL!
+            print(f"❌ EXCEPTION SAAT REQUEST: {str(e)}") 
+            flash(f'Cloudflareの確認に失敗しました (System Error): {str(e)}', 'error')
             return redirect(url_for('pages.register'))
 
         spam_domains = ['immenseignite.info', 'tempmail.com', 'guerrillamail.com']
@@ -131,6 +136,7 @@ def register() -> str:
             flash("登録が完了しました。確認メールを送信しました。メールを確認してアカウントを有効化してください。", "success")
             return redirect(url_for("pages.login"))
 
+    # 3. KIRIM site_key KE TEMPLATE (BIAR GAK ERROR "site_key not defined")
     return render_template("register.html", turnstile_site_key=site_key)
 
 
