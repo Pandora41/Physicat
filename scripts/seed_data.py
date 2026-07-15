@@ -33,7 +33,6 @@ with app.app_context():
                 <p>v = f × λ</p>
                 <p>Dimana: v = kecepatan, f = frekuensi, λ = panjang gelombang</p>
             """,
-            simulation_type="wave",
             order_index=1
         )
         db.session.add(lesson1)
@@ -115,7 +114,6 @@ with app.app_context():
                     <li>Check QBER untuk deteksi penyadapan</li>
                 </ol>
             """,
-            simulation_type="bb84",
             order_index=2
         )
         db.session.add(lesson2)

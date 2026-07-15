@@ -6,7 +6,6 @@
   <title>{% block title %}Physicat{% endblock %}</title>
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -47,5 +46,6 @@
   <main class="home-main">
     {% block content %}{% endblock %}
   </main>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </body>
 </html>

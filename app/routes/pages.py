@@ -1,6 +1,7 @@
 # Pages Routes - serves HTML pages
 from typing import Dict, Any
-
+import os
+from flask import render_template, request, flash, redirect, url_for, current_app
 from flask import current_app, request, flash, redirect, url_for
 
 import structlog
@@ -20,6 +21,8 @@ from app.utils.email import (
 logger = structlog.get_logger(__name__)
 
 bp = Blueprint("pages", __name__)
+
+site_key = os.environ.get('TURNSTILE_SITE_KEY', '')
 
 
 # Home page
@@ -80,7 +83,7 @@ def register() -> str:
 
         if not turnstile_token:
             flash('Cloudflareの確認に失敗しました。', 'error')
-            return redirect(url_for('auth.register'))
+            return redirect(url_for('pages.register'))
         
         # Verifikasi ke Cloudflare
         verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
@@ -96,10 +99,10 @@ def register() -> str:
             
             if not result.get('success'):
                 flash('Cloudflareの確認に失敗しました。', 'error')
-                return redirect(url_for('auth.register'))
+                return redirect(url_for('pages.register'))
         except Exception as e:
             flash('Cloudflareの確認に失敗しました。', 'error')
-            return redirect(url_for('auth.register'))
+            return redirect(url_for('pages.register'))
 
         spam_domains = ['immenseignite.info', 'tempmail.com', 'guerrillamail.com']
         if any(email.endswith(f'@{domain}') for domain in spam_domains):
@@ -128,7 +131,7 @@ def register() -> str:
             flash("登録が完了しました。確認メールを送信しました。メールを確認してアカウントを有効化してください。", "success")
             return redirect(url_for("pages.login"))
 
-    return render_template("register.html")
+    return render_template("register.html", turnstile_site_key=site_key)
 
 
 @bp.route("/verify/<token>", methods=["GET"])
@@ -341,3 +344,6 @@ def logout() -> str:
     session.pop("is_verified", None)
     flash("ログアウトしました。", "success")
     return redirect(url_for("pages.index"))
+
+
+    
