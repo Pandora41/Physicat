@@ -75,6 +75,11 @@ def register() -> str:
         password = request.form.get("password", "")
         confirm_password = request.form.get("confirm_password", "")
 
+        spam_domains = ['immenseignite.info', 'tempmail.com', 'guerrillamail.com']
+        if any(email.endswith(f'@{domain}') for domain in spam_domains):
+            flash("無効なメールアドレスです。", "error")
+            return redirect(url_for('pages.register'))
+
         if not username or not email or not password or not confirm_password:
             flash("すべてのフィールドを入力してください。", "danger")
         elif len(password) < 8:

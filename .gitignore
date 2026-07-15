@@ -23,6 +23,7 @@ __pycache__/
 .env.production
 *.db
 app.db
+app.db
 *.sqlite
 physicat.db
 
